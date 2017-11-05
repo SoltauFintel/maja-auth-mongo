@@ -1,0 +1,9 @@
+def auth = 'maja-auth'
+includeFlat auth
+//project(":$auth").projectDir = file("../../$auth/$auth")
+def mongo = 'maja-mongo'
+includeFlat mongo
+//project(":$mongo").projectDir = file("../../$mongo/$mongo")
+def web = 'maja-web'
+includeFlat web
+//project(":$web").projectDir = file("../../$web/$web")
