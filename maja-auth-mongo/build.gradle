@@ -10,12 +10,15 @@ compileJava.options.encoding = 'windows-1252'
 compileTestJava.options.encoding = 'windows-1252'
 
 dependencies {
-	compile project(':maja-auth')
-	compile project(':maja-mongo')
+	compile 'com.github.SoltauFintel:maja-auth:0.1.0'
+	compile 'com.github.SoltauFintel:maja-mongo:0.1.0'
+//	compile project(':maja-auth')
+//	compile project(':maja-mongo')
 }
 
 repositories {
 	mavenCentral()
+	maven { url 'https://jitpack.io' }
 }
 
 task sourcesJar(type: Jar) {
