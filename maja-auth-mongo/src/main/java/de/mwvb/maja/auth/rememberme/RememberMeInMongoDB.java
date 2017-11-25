@@ -9,11 +9,12 @@ import spark.Response;
 
 public class RememberMeInMongoDB implements RememberMeFeature {
 	// https://stackoverflow.com/a/5083809/3478021
-	private static final String COOKIE_NAME = "KNOWNUSERID";
 	private final KnownUserDAO dao;
+	private final Cookie cookie;
 	
-	public RememberMeInMongoDB(Database database) {
+	public RememberMeInMongoDB(Database database, String appName) {
 		dao = new KnownUserDAO(database);
+		cookie = new Cookie("KNOWNUSERID" + appName);
 	}
 	
 	@Override
@@ -26,16 +27,16 @@ public class RememberMeInMongoDB implements RememberMeFeature {
 			knownUser.setUserId(userId);
 			dao.save(knownUser);
 			
-			setCookie(res, knownUser);
+			cookie.set(knownUser.getId(), res, "remember-me");
 		} else {
-			res.removeCookie(COOKIE_NAME);
+			cookie.remove(res);
 			dao.delete(userId);
 		}
 	}
 	
 	@Override
 	public void forget(Response res, String userId) {
-		res.removeCookie(COOKIE_NAME);
+		cookie.remove(res);
 		if (userId != null) {
 			dao.delete(userId);
 		}
@@ -43,21 +44,17 @@ public class RememberMeInMongoDB implements RememberMeFeature {
 
 	@Override
 	public IKnownUser getUserIfKnown(Request req, Response res) {
-		String id = req.cookie(COOKIE_NAME);
+		String id = cookie.get(req);
 		if (id == null) {
 			return null;
 		}
 		KnownUser ku = dao.get(id);
 		if (ku == null) {
-			res.removeCookie(COOKIE_NAME);
+			cookie.remove(res);
 		} else {
 			Logger.debug("Remembered user: " + ku.getUser() + " (" + ku.getUserId() + ")");
-			setCookie(res, ku); // Extends cookie life time.
+			cookie.extendLifeTime(ku.getId(), res);
 		}
 		return ku;
-	}
-
-	private void setCookie(Response res, KnownUser ku) {
-		res.cookie("", "/", COOKIE_NAME, ku.getId(), 60 * 60 * 24 * 30 /* 30 days */, false, false);
 	}
 }
