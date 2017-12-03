@@ -2,18 +2,47 @@ package de.mwvb.maja.auth.rememberme;
 
 import org.pmw.tinylog.Logger;
 
+import com.google.inject.Inject;
+
 import de.mwvb.maja.mongo.AbstractDAO;
+import de.mwvb.maja.mongo.MongoPlugin;
+import de.mwvb.maja.web.AppConfig;
+import de.mwvb.maja.web.Broadcaster;
 import spark.Request;
 import spark.Response;
 
 public class RememberMeInMongoDB implements RememberMeFeature {
 	// https://stackoverflow.com/a/5083809/3478021
-	private final KnownUserDAO dao;
-	private final Cookie cookie;
 	
-	public RememberMeInMongoDB(String appName) {
-		dao = new KnownUserDAO();
-		cookie = new Cookie("KNOWNUSERID" + appName);
+	@Inject
+	private AppConfig config;
+	@Inject
+	private KnownUserDAO dao;
+	@Inject
+	private Broadcaster broadcaster;
+	private Cookie cookie;
+	
+	@Override
+	public void install() {
+System.out.println("Remember me install()");		
+		broadcaster.broadcast(MongoPlugin.ENTITY_CLASS, KnownUser.class.getName());
+
+		cookie = new Cookie("KNOWNUSERID" + getAppName());
+	}
+
+	private String getAppName() {
+		String appName = config.get("app.name");
+		if (appName == null) {
+			appName = "";
+		} else {
+			for (int i = 0; i < appName.length(); i++) {
+				char c = appName.charAt(i);
+				if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_')) {
+					throw new RuntimeException("Illegal char '" + c + "' in parameter 'app.name'. Please fix config.");
+				}
+			}
+		}
+		return appName;
 	}
 	
 	@Override
