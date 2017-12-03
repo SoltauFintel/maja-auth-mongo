@@ -24,7 +24,6 @@ public class RememberMeInMongoDB implements RememberMeFeature {
 	
 	@Override
 	public void install() {
-System.out.println("Remember me install()");		
 		broadcaster.broadcast(MongoPlugin.ENTITY_CLASS, KnownUser.class.getName());
 
 		cookie = new Cookie("KNOWNUSERID" + getAppName());
