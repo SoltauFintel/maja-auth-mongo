@@ -3,6 +3,7 @@ package de.mwvb.maja.auth.rememberme;
 import org.pmw.tinylog.Logger;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import de.mwvb.maja.mongo.AbstractDAO;
 import de.mwvb.maja.mongo.MongoPlugin;
@@ -11,6 +12,7 @@ import de.mwvb.maja.web.Broadcaster;
 import spark.Request;
 import spark.Response;
 
+@Singleton
 public class RememberMeInMongoDB implements RememberMeFeature {
 	// https://stackoverflow.com/a/5083809/3478021
 	
@@ -83,9 +85,5 @@ public class RememberMeInMongoDB implements RememberMeFeature {
 			cookie.extendLifeTime(ku.getId(), res);
 		}
 		return ku;
-	}
-
-	@Override
-	public void printInfo() {
 	}
 }
