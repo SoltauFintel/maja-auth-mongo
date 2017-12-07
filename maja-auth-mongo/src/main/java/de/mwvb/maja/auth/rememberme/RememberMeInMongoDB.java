@@ -3,6 +3,7 @@ package de.mwvb.maja.auth.rememberme;
 import org.pmw.tinylog.Logger;
 
 import de.mwvb.maja.mongo.AbstractDAO;
+import de.mwvb.maja.mongo.Database;
 import spark.Request;
 import spark.Response;
 
@@ -11,8 +12,8 @@ public class RememberMeInMongoDB implements RememberMeFeature {
 	private final KnownUserDAO dao;
 	private final Cookie cookie;
 	
-	public RememberMeInMongoDB(String appName) {
-		dao = new KnownUserDAO();
+	public RememberMeInMongoDB(Database database, String appName) {
+		dao = new KnownUserDAO(database);
 		cookie = new Cookie("KNOWNUSERID" + appName);
 	}
 	
@@ -55,9 +56,5 @@ public class RememberMeInMongoDB implements RememberMeFeature {
 			cookie.extendLifeTime(ku.getId(), res);
 		}
 		return ku;
-	}
-
-	@Override
-	public void printInfo() {
 	}
 }
