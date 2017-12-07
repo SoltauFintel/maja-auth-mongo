@@ -3,17 +3,19 @@ package de.mwvb.maja.auth.rememberme;
 import org.pmw.tinylog.Logger;
 
 import de.mwvb.maja.mongo.AbstractDAO;
-import de.mwvb.maja.mongo.Database;
+import de.mwvb.maja.web.AppConfig;
 import spark.Request;
 import spark.Response;
 
 public class RememberMeInMongoDB implements RememberMeFeature {
 	// https://stackoverflow.com/a/5083809/3478021
+	
 	private final KnownUserDAO dao;
 	private final Cookie cookie;
 	
-	public RememberMeInMongoDB(Database database, String appName) {
-		dao = new KnownUserDAO(database);
+	public RememberMeInMongoDB() {
+		dao = new KnownUserDAO();
+		String appName = new AppConfig().get("app.name");
 		cookie = new Cookie("KNOWNUSERID" + appName);
 	}
 	
