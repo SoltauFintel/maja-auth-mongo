@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import de.mwvb.maja.mongo.AbstractDAO;
-import de.mwvb.maja.mongo.DatabaseFactory;
+import de.mwvb.maja.mongo.MongoPlugin;
 import de.mwvb.maja.web.AppConfig;
 import de.mwvb.maja.web.Broadcaster;
 import spark.Request;
@@ -26,7 +26,7 @@ public class RememberMeInMongoDB implements RememberMeFeature {
 	
 	@Override
 	public void install() {
-		broadcaster.broadcast(DatabaseFactory.ENTITY_CLASS, KnownUser.class.getName());
+		broadcaster.broadcast(MongoPlugin.ENTITY_CLASS, KnownUser.class.getName());
 
 		cookie = new Cookie("KNOWNUSERID" + getAppName());
 	}
